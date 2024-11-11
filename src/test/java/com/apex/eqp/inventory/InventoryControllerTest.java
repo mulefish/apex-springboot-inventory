@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,5 +47,14 @@ class InventoryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }
+//    ////////////
+//    @SneakyThrows
+//    @Test
+//    void shouldUpdateProduct() {
+//        mockMvc.perform(put("/api/inventory/product/{id}", 1L)
+//                        .content("{\"name\": \"Updated Product\", \"price\": 150}")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//    }
 
 }
