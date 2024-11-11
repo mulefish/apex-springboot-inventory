@@ -5,12 +5,7 @@ import com.apex.eqp.inventory.entities.RecalledProduct;
 import com.apex.eqp.inventory.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -42,4 +37,36 @@ public class InventoryController {
 
         return byId.map(ResponseEntity::ok).orElse(null);
     }
+
+    /*
+    THE ABOVE LOOKS OK,but lets add some CRUD
+     */
+    // Update an existing product by ID
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody Product productDetails) {
+        Optional<Product> optionalProduct = productService.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product existingProduct = optionalProduct.get();
+            existingProduct.setName(productDetails.getName());
+            existingProduct.setPrice(productDetails.getPrice());
+            existingProduct.setQuantity(productDetails.getQuantity());
+            productService.save(existingProduct); // Save the updated product
+            return ResponseEntity.ok(existingProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Delete a product by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
+        if (productService.existsById(id)) {
+            productService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }

@@ -38,4 +38,13 @@ public class ProductService {
     public Optional<Product> findById(Integer id) {
         return inventoryRepository.findById(id);
     }
+
+    // ADDING CRUD!
+    public boolean existsById(Integer id) {
+        return inventoryRepository.existsById(id);
+    }
+
+    public void deleteById(Integer id) {
+        inventoryRepository.deleteById(id);
+    }
 }

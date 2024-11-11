@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product and Recalled Product Management</title>
+</head>
+<body>
+<h1>Product and Recalled Product Management</h1>
+
+<!-- Button to Fetch All Products -->
+<h2>View All Products</h2>
+<button onclick="fetchAllProducts()">Get All Products</button>
+<pre id="allProductsList"></pre>
+
+<!-- Button to Fetch All Recalled Products -->
+<h2>View All Recalled Products</h2>
+<button onclick="fetchRecalledProducts()">Get All Recalled Products</button>
+<pre id="recalledProductsList"></pre>
+
+<!-- Form to Create a New Product -->
+<h2>Create New Product</h2>
+<form id="createProductForm">
+    <label for="newProductName">Name:</label>
+    <input type="text" id="newProductName" name="newProductName" required>
+
+    <label for="newProductPrice">Price:</label>
+    <input type="number" step="0.01" id="newProductPrice" name="newProductPrice" required>
+
+    <label for="newProductQuantity">Quantity:</label>
+    <input type="number" id="newProductQuantity" name="newProductQuantity" required>
+
+    <button type="button" onclick="createProduct()">Create Product</button>
+</form>
+
+<!-- Form to Update a Product -->
+<h2>Update Product</h2>
+<form id="updateProductForm">
+    <label for="productIdToUpdate">Product ID:</label>
+    <input type="number" id="productIdToUpdate" name="productIdToUpdate" required>
+
+    <label for="productNameToUpdate">New Name:</label>
+    <input type="text" id="productNameToUpdate" name="productNameToUpdate" required>
+
+    <label for="productPriceToUpdate">New Price:</label>
+    <input type="number" step="0.01" id="productPriceToUpdate" name="productPriceToUpdate" required>
+
+    <label for="productQuantityToUpdate">New Quantity:</label>
+    <input type="number" id="productQuantityToUpdate" name="productQuantityToUpdate" required>
+
+    <button type="button" onclick="updateProduct()">Update Product</button>
+</form>
+
+<!-- Form to Delete a Product -->
+<h2>Delete Product</h2>
+<form id="deleteProductForm">
+    <label for="productIdToDelete">Product ID:</label>
+    <input type="number" id="productIdToDelete" name="productIdToDelete" required>
+    <button type="button" onclick="deleteProduct()">Delete Product</button>
+</form>
+
+<!-- Form to Create a New Recalled Product -->
+<h2>Create New Recalled Product</h2>
+<form id="createRecalledProductForm">
+    <label for="newRecalledProductName">Name:</label>
+    <input type="text" id="newRecalledProductName" name="newRecalledProductName" required>
+
+    <label for="newRecalledProductExpired">Expired:</label>
+    <input type="checkbox" id="newRecalledProductExpired" name="newRecalledProductExpired">
+
+    <button type="button" onclick="createRecalledProduct()">Create Recalled Product</button>
+</form>
+
+<!-- Form to Update a Recalled Product -->
+<h2>Update Recalled Product</h2>
+<form id="updateRecalledProductForm">
+    <label for="recalledProductIdToUpdate">Recalled Product ID:</label>
+    <input type="number" id="recalledProductIdToUpdate" name="recalledProductIdToUpdate" required>
+
+    <label for="recalledProductNameToUpdate">New Name:</label>
+    <input type="text" id="recalledProductNameToUpdate" name="recalledProductNameToUpdate" required>
+
+    <label for="recalledProductExpiredToUpdate">Expired:</label>
+    <input type="checkbox" id="recalledProductExpiredToUpdate" name="recalledProductExpiredToUpdate">
+
+    <button type="button" onclick="updateRecalledProduct()">Update Recalled Product</button>
+</form>
+
+<!-- Form to Delete a Recalled Product -->
+<h2>Delete Recalled Product</h2>
+<form id="deleteRecalledProductForm">
+    <label for="recalledProductIdToDelete">Recalled Product ID:</label>
+    <input type="number" id="recalledProductIdToDelete" name="recalledProductIdToDelete" required>
+    <button type="button" onclick="deleteRecalledProduct()">Delete Recalled Product</button>
+</form>
+
+<script>
+    // CRUD Operations for Products
+    function fetchAllProducts() {
+        fetch('http://localhost:8080/api/inventory/product')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('allProductsList').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function createProduct() {
+        const name = document.getElementById('newProductName').value;
+        const price = parseFloat(document.getElementById('newProductPrice').value);
+        const quantity = parseInt(document.getElementById('newProductQuantity').value);
+
+        fetch('http://localhost:8080/api/inventory/product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, price, quantity })
+        })
+        .then(response => response.json())
+        .then(data => alert('Product created successfully'))
+        .catch(error => console.error('Error:', error));
+    }
+
+    function updateProduct() {
+        const id = document.getElementById('productIdToUpdate').value;
+        const name = document.getElementById('productNameToUpdate').value;
+        const price = parseFloat(document.getElementById('productPriceToUpdate').value);
+        const quantity = parseInt(document.getElementById('productQuantityToUpdate').value);
+
+        fetch(`http://localhost:8080/api/inventory/product/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, price, quantity })
+        })
+        .then(response => response.json())
+        .then(data => alert('Product updated successfully'))
+        .catch(error => console.error('Error:', error));
+    }
+
+    function deleteProduct() {
+        const id = document.getElementById('productIdToDelete').value;
+
+        fetch(`http://localhost:8080/api/inventory/product/${id}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) alert('Product deleted successfully');
+                else throw new Error('Failed to delete product');
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // CRUD Operations for Recalled Products
+    function fetchRecalledProducts() {
+        fetch('http://localhost:8080/api/inventory/recalled/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('recalledProductsList').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function createRecalledProduct() {
+        const name = document.getElementById('newRecalledProductName').value;
+        const expired = document.getElementById('newRecalledProductExpired').checked;
+
+        fetch('http://localhost:8080/api/inventory/recalled', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, expired })
+        })
+        .then(response => response.json())
+        .then(data => alert('Recalled product created successfully'))
+        .catch(error => console.error('Error:', error));
+    }
+
+    function updateRecalledProduct() {
+        const id = document.getElementById('recalledProductIdToUpdate').value;
+        const name = document.getElementById('recalledProductNameToUpdate').value;
+        const expired = document.getElementById('recalledProductExpiredToUpdate').checked;
+
+        fetch(`http://localhost:8080/api/inventory/recalled/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, expired })
+        })
+        .then(response => response.json())
+        .then(data => alert('Recalled product updated successfully'))
+        .catch(error => console.error('Error:', error));
+    }
+
+    function deleteRecalledProduct() {
+        const id = document.getElementById('recalledProductIdToDelete').value;
+
+        fetch(`http://localhost:8080/api/inventory/recalled/${id}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) alert('Recalled product deleted successfully');
+                else throw new Error('Failed to delete recalled product');
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>

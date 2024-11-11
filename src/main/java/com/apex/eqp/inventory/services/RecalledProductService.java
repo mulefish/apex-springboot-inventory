@@ -25,4 +25,15 @@ public class RecalledProductService {
     public Optional<RecalledProduct> findById(Integer id) {
         return recalledProductRepository.findById(id);
     }
+
+    // ADDING CRUD!
+
+    public boolean existsById(Integer id) {
+        return recalledProductRepository.existsById(id);
+    }
+
+    public void deleteById(Integer id) {
+        recalledProductRepository.deleteById(id);
+    }
+
 }
